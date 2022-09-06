@@ -55,5 +55,5 @@ jobs:
       uses: ./terraform
       with:
         tf_actions_version: 1.2.8
-        tf_actions_subcommand: 'destroy'
+        tf_actions_subcommand: 'apply'
         tf_actions_working_dir: "./infra"
