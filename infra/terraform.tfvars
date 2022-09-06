@@ -1,3 +1,3 @@
 rgname   = "github-action"
 location = "Southeast Asia"
-sname    = "devopsintro"
+sname    = "terraformcodeout"
