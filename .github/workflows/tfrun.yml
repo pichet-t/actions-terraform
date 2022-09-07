@@ -1,4 +1,4 @@
-name: 'Terraform run'
+name: 'Terraform tfrun'
 
 on:
   workflow_dispatch:
