@@ -1,0 +1,62 @@
+name: 'Terraform tfrun'
+
+on:
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    name: 'Terraform run'
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ACN_DEV_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ACN_DEV_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ACN_DEV_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ACN_DEV_TENANT_ID }}
+    runs-on: [ self-hosted-dev ]
+    #environment: dev
+
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+    - name: Cleaning the repository
+      run: sudo chown -R $USER:$USER $GITHUB_WORKSPACE
+
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: 'Terraform Format'
+      uses: ./terraform
+      with:
+        tf_actions_version: 1.2.8
+        tf_actions_subcommand: 'fmt'
+        tf_actions_working_dir: "./infra"
+        
+    - name: 'Terraform Init'
+      uses: ./terraform
+      with:
+        tf_actions_version: 1.2.8
+        tf_actions_subcommand: 'init'
+        tf_actions_working_dir: "./infra"
+
+    - name: 'Terraform Validate'
+      uses: ./terraform
+      with:
+        tf_actions_version: 1.2.8
+        tf_actions_subcommand: 'validate'
+        tf_actions_working_dir: "./infra"
+        
+    - name: 'Terraform Plan'
+      uses: ./terraform
+      with:
+        tf_actions_version: 1.2.8
+        tf_actions_subcommand: 'plan'
+        tf_actions_working_dir: "./infra"
+
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/master'
+      uses: ./terraform
+      with:
+        tf_actions_version: 1.2.8
+        tf_actions_subcommand: 'destroy'
+        tf_actions_working_dir: "./infra"
